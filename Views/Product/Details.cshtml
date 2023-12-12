@@ -1,0 +1,141 @@
+﻿@model AmalCollections.Data.Product
+
+@{
+    ViewData["Title"] = "Product Details";
+}
+<style>
+
+    .borderblack {
+        border: 3px solid black;
+    }
+
+    .mainImg {
+        height: 500px;
+        max-width: 100%;
+    }
+
+    .thumbCont {
+        padding: 10px;
+    }
+
+    .thumbImg {
+        height: 150px;
+        max-width: 100%;
+    }
+    .btn-black{
+        width: 100%;
+    }
+    .description {
+        color: black !important;
+    }
+    @@media (max-width: 767px) {
+        .thumbCont {
+            padding: 0px;
+            margin-top: 5px;
+        }
+        .btn-black {
+            margin-top: 5px;
+        }
+    }
+</style>
+<br />
+<div class="container">
+    <div class="row">
+        <div class="col-md-7">
+            <div class="row">
+                <div class="col-md-8">
+                    <img class="mainImg" src="~/images/products/@Model.ProductImages.FirstOrDefault().ImagePath" />
+                </div>
+                <div class="col-md-4">
+                    <div class="row">
+                        @foreach (var item in Model.ProductImages)
+                        {
+                            <div class="col-4 col-sm-4 col-md-12">
+                                <div class="thumbCont">
+                                    <img class="thumbImg" src="~/images/products/@item.ImagePath" />
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-5 description">
+            <h2>@Model.Name</h2>
+            <h4>Rs. @Model.SalePrice</h4>
+            <p><b>Quantity</b></p>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="quantity buttons_added">
+                        <input type="button" value="-" class="minus"><input readonly type="number" step="1" min="1" max="" name="quantity" value="1" title="Qty" class="input-text qty text" size="4" pattern="" inputmode=""><input type="button" value="+" class="plus">
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <button id="btnAdd" class="btn btn-black">Add to Cart</button>
+                </div>
+            </div>
+            <br />
+            <h3>
+                <b>Description</b>
+            </h3>
+            <p>
+                @Model.Description
+            </p>
+        </div>
+    </div>
+</div>
+@section Scripts
+{
+    <script>
+        $('document').ready(function () {
+            //Zoom
+            $(function () {
+                $('.mainImg').okzoom({
+                    width: 200,
+                    height: 200
+                });
+            });
+
+            //click
+            $('.minus').click(function () {
+                var qty = parseInt($('.qty').val());
+                if (qty > 1) {
+                    qty = qty - 1;
+                }
+                $('.qty').val(qty);
+            })
+            $('.plus').click(function () {
+                var qty = parseInt($('.qty').val());
+                qty = qty + 1;
+                $('.qty').val(qty);
+            })
+            $('.thumbImg').on('click', function () {
+                var newAtr = $(this).attr('src');
+                $('.mainImg').attr('src', newAtr);
+                $('.thumbImg').each(function () {
+                    $(this).removeClass('borderblack');
+                });
+                $(this).addClass('borderblack');
+            })
+            $('#btnAdd').click(function () {
+                var productId = @Model.Id;
+                var qty = parseInt($('.qty').val());
+                $.when(AddToCart(productId, qty)).done(function () {
+                    $.confirm({
+                        title: 'Question',
+                        content: 'Item added to cart',
+                        theme: 'supervan',
+                        buttons: {
+                            "Continue Shopping": function () {
+                                window.location.href = '/Product/Index/7?catId=1&sortId=7';
+                            },
+                            "Checkout": function () {
+                                window.location.href = '/Cart/CartDetail';
+                            }
+                        }
+                    })
+                })
+            })
+        })
+    </script>
+}

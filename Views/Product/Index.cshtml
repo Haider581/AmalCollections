@@ -1,0 +1,112 @@
+﻿@model IEnumerable<AmalCollections.VMs.ProductVM>
+
+@{
+    ViewData["Title"] = "Products";
+}
+<style>
+    h2 {
+        font-family: "Karla","HelveticaNeue","Helvetica Neue",sans-serif;
+        font-weight: 400;
+        letter-spacing: 0.1em;
+        font-size: 2.14286em;
+    }
+
+    label {
+        font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
+        font-size: 0.85714em;
+        font-weight: 700;
+        color: #666;
+        text-transform: uppercase;
+        margin-bottom: 13px;
+    }
+
+    .pName {
+        white-space: normal;
+        color: #000;
+        display: block;
+        margin-bottom: 0px;
+        font-weight: 600;
+        text-transform: uppercase !important;
+        text-decoration: none !important;
+        font-family: "proxima_novabold", Arial, Helvetica, sans-serif;
+        letter-spacing: 0.5px;
+        font-size: 11px;
+    }
+
+    .pPrice {
+        font-weight: 400;
+        color: #000;
+        font: 10px/15px "proxima_novasemibold", Arial, Helvetica, sans-serif;
+        font-size: 11px;
+        margin-top: 3px;
+    }
+</style>
+<br />
+<div class="container">
+    <div class="row">
+        <div class="col-md-6" style="margin-top: 30px;">
+            @if (string.IsNullOrWhiteSpace(ViewBag.Category) || ViewBag.Category == "All")
+            {
+                <h2>@ViewBag.Brand</h2>
+            }
+            else
+            {
+                <h2>@ViewBag.Brand - @ViewBag.Category</h2>
+            }
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Filter By</label>
+                <select id="CategoryId" class="form-control" asp-items="@ViewBag.Categories"></select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label>Order By</label>
+                <select id="SortId" class="form-control">
+                    <option value="1">Featured</option>
+                    <option value="2">Best Selling</option>
+                    <option value="3">Alphabetically, A-Z</option>
+                    <option value="4">Alphabetically, Z-A</option>
+                    <option value="5">Price, low to high</option>
+                    <option value="6">Price, high to low</option>
+                    <option value="7">Date, new to old</option>
+                    <option value="8">Date, old to new</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        @foreach (var item in Model)
+        {
+        <div class="col-6 col-md-2 text-center">
+            <a asp-action="Details" asp-controller="Product" asp-route-id="@item.Id">
+                <img src="~/images/products/@item.ImagePath" style="width: 100%; height: 235px;" />
+                <div class="pName">
+                    @item.Name
+                </div>
+                <div class="pPrice">
+                    Rs. @item.SalePrice
+                </div>
+            </a>
+        </div>
+        }
+    </div>
+</div>
+
+
+
+@section Scripts{
+    <script>
+        $('#CategoryId').change(function () {
+            window.location.href = '/Product/Index/' + @ViewBag.BrandId + '?catId=' + $('#CategoryId').val() + '&sortId=' + $('#SortId').val();
+        });
+        $('#SortId').change(function () {
+            window.location.href = '/Product/Index/' + @ViewBag.BrandId + '?catId=' + $('#CategoryId').val() + '&sortId=' + $('#SortId').val();
+        });
+    $('document').ready(function () {
+        $('#CategoryId').val(@ViewBag.CategoryId);
+        $('#SortId').val(@ViewBag.SortId);
+    })
+    </script>
+}

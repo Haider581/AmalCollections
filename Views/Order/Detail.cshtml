@@ -1,0 +1,92 @@
+﻿@model IEnumerable<AmalCollections.Data.OrderDetail>
+
+@{
+    ViewData["Title"] = "Detail";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="text-center">@ViewData["Title"]</h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <label>Order # : <b>@Model.FirstOrDefault().DocId</b></label>
+    </div>
+    <div class="col-md-9">
+        <label>Date : <b>@Model.FirstOrDefault().Date</b></label>
+    </div>
+    <div class="col-md-3">
+        <label>Customer : <b>@(Model.FirstOrDefault().Customer.FirstName + " " + Model.FirstOrDefault().Customer.LastName)</b></label>
+    </div>
+    <div class="col-md-9">
+        <label>Address : <b>@(Model.FirstOrDefault().Customer.Address)</b></label>
+    </div>
+    <div class="col-md-3">
+        <label>Status : <b>@(Model.FirstOrDefault().Status)</b></label>
+    </div>
+    <div class="col-md-9">
+        <label>Email/Phone : <b>@(Model.FirstOrDefault().Customer.Email + Model.FirstOrDefault().Customer.Phone)</b></label>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <table id="myTable" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>
+                        Item Name
+                    </th>
+                    <th class="text-center">
+                        Qty
+                    </th>
+                    <th class="text-center">
+                        Rate
+                    </th>
+                    <th class="text-center">
+                        Amount
+                    </th>
+                    @*<th>Actions</th>*@
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                <tr>
+                    <td>
+                        @(item.Product.Brand.Name + " " + item.Product.Name)
+                    </td>
+                    <td class="text-center">
+                        @(item.Qty)
+                    </td>
+                    <td class="text-center">
+                        @(item.Rate)
+                    </td>
+                    <td class="text-center">
+                        @item.Amount
+                    </td>
+                    @*<td>
+            <a class="btn btn-sm btn-outline-success" asp-action="Detail" asp-controller="Order" asp-route-docId="@item.DocId">
+                <span class="fa fa-file-invoice"></span> Details
+            </a>
+        </td>*@
+                </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Totals</th>
+                    <th class="text-center">@Model.Sum(a => a.Qty)</th>
+                    <th></th>
+                    <th class="text-center">@Model.Sum(a => a.Amount)</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+@section Scripts{
+    <script>
+        $('document').ready(function () {
+        })
+    </script>
+}

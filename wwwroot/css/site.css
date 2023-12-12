@@ -1,0 +1,232 @@
+﻿@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+* {
+    margin: 0;
+    padding: 0;
+    user-select: none;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+.form-control:focus {
+    border: 1px solid black !important;
+    box-shadow: 0px 0px 0.5px 0.5px rgba(0,0,0,0.75) !important;
+}
+
+/*---Quantity----*/
+
+.quantity {
+    display: inline-block;
+}
+
+    .quantity .input-text.qty {
+        width: 35px;
+        height: 41px;
+        padding: 0 5px;
+        text-align: center;
+        background-color: transparent;
+        border: 1px solid #efefef;
+    }
+
+    .quantity.buttons_added {
+        text-align: left;
+        position: relative;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+        .quantity.buttons_added input {
+            display: inline-block;
+            margin: 0;
+            vertical-align: top;
+            box-shadow: none;
+        }
+
+        .quantity.buttons_added .minus,
+        .quantity.buttons_added .plus {
+            padding: 7px 10px 8px;
+            height: 41px;
+            background-color: #ffffff;
+            border: 1px solid #efefef;
+            cursor: pointer;
+        }
+
+        .quantity.buttons_added .minus {
+            border-right: 0;
+        }
+
+        .quantity.buttons_added .plus {
+            border-left: 0;
+        }
+
+            .quantity.buttons_added .minus:hover,
+            .quantity.buttons_added .plus:hover {
+                background: #eeeeee;
+            }
+
+    .quantity input::-webkit-outer-spin-button,
+    .quantity input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        margin: 0;
+    }
+
+    .quantity.buttons_added .minus:focus,
+    .quantity.buttons_added .plus:focus {
+        outline: none;
+    }
+
+/*---Quantity----*/
+
+
+/*---Footer----*/
+
+@font-face {
+    src: url('../fonts/Futura Std Medium.otf');
+    font-family: 'futura';
+    font-size: 12px;
+}
+
+.myFooter ul li, .myFooter a{
+    font-family: 'futura';
+    font-size: 12px;
+}
+.myFooter ul {
+    line-height: 24px;
+}
+.copy, .copyPower {
+    font-family: 'futura';
+    font-size: 10px;
+}
+
+.customLogo a {
+    font-family: 'Charm';
+    font-size: 36px;
+    text-decoration: none;
+    color: black;
+}
+
+#cart {
+    z-index: 999 !important;
+    position: absolute;
+    float: right;
+}
+
+html {
+    position: relative;
+    min-height: 100vh;
+}
+
+body {
+    margin-bottom: 500px;
+}
+
+.myFooter {
+    padding-top: 15px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: #eee;
+}
+
+.contact a {
+    text-decoration: none;
+    color: black;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.myFooter li {
+    list-style-type: none;
+}
+
+.subscribe h6 {
+    text-align: right;
+}
+
+.copyPower {
+    text-align: right;
+}
+
+.btn-black{
+    background-color: black;
+    color: white;
+}
+    .btn-black:hover {
+        background-color: lightslategrey;
+        color: black;
+    }
+
+@media (max-width: 767px) {
+    .contact, .social{
+        margin-bottom: 18px;
+    }
+    .subscribe {
+        order: 1
+    }
+        .subscribe h6 {
+            text-align: center;
+        }
+
+    .exchange {
+        order: 2
+    }
+
+    .about {
+        order: 3
+    }
+
+    .social-text {
+        display: none;
+    }
+
+    .copy, .copyPower {
+        text-align: center;
+    }
+}
+/*---Footer----*/
+
+/*----Loader------*/
+.loader {
+    position: fixed;
+    display: none;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background-color: white;
+}
+
+.lds-dual-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+}
+
+    .lds-dual-ring:after {
+        content: " ";
+        display: block;
+        width: 64px;
+        height: 64px;
+        margin: 8px;
+        border-radius: 50%;
+        border: 6px solid #333;
+        border-color: #333 transparent #333 transparent;
+        animation: lds-dual-ring 1.2s linear infinite;
+    }
+
+@keyframes lds-dual-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/*----Loader------*/

@@ -1,0 +1,117 @@
+﻿@model IEnumerable<AmalCollections.VMs.DocVM>
+
+@{
+    ViewData["Title"] = "Card Details";
+    double qty = 0, rate = 0, amount = 0, totalAmount = 0;
+}
+
+<div class="container">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
+                <h3>Shopping Cart</h3>
+            </div>
+        </div>
+        <div class="row">
+            <table class="table">
+                <tbody id="tBody">
+                    @foreach (var item in Model)
+                    {
+                        qty = item.Qty; rate = item.Rate; amount = item.Qty * item.Rate; totalAmount += amount;
+                        <tr>
+                            <td style="width: 75%">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <img width="115" height="170" src="~/images/products/@item.ImagePath" />
+                                    </div>
+                                    <div class="col-md-10" style="height: 170px !important; padding-top: 65px;">
+                                        <h4>@item.Product.Name</h4>
+                                        <p class="productId" hidden>@item.ProductId</p>
+                                        <button class="btn btnRemove btn-sm btn-outline-danger"><span class="fa fa-trash"></span> Remove</button>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="width: 25%">
+                                <div class="row">
+                                    <div class="col-md-6" style="height: 170px !important; padding-top: 65px;">
+                                        <div class="quantity buttons_added">
+                                            <input type="button" value="-" class="minus"><input readonly type="number" step="1" min="1" max="" name="quantity" value="@item.Qty" title="Qty" class="input-text qty text" size="4" pattern="" inputmode=""><input type="button" value="+" class="plus">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6" style="height: 170px !important; padding-top: 75px;">
+                                        <p>Rs. @(amount)</p>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th style="width: 75%"></th>
+                        <th style="width: 25%">
+                            <div class="row">
+                                <div class="col-md-6">
+                                </div>
+                                <div class="col-md-6">
+                                    <p>Rs. @totalAmount</p>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-right">
+                <a asp-action="Complete" asp-controller="Cart" class="btn btn-sm btn-black">Complete</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $('document').ready(function () {
+
+            //Click
+            $('#tBody').on('click', '.minus', function () {
+                var row = $(this).closest('tr');
+                $('.loader').show();
+                var qty = parseInt(row.find('.qty').val());
+                if (qty > 1) {
+                    qty = qty - 1;
+                }
+                row.find('.qty').val(qty);
+                var productId = parseInt(row.find('.productId').text());
+                var qty = parseInt(row.find('.qty').val());
+                $.when(AddToCart(productId, qty)).done(function () {
+                    window.location.reload();
+                    $('.loader').hide();
+                });
+            })
+            $('#tBody').on('click', '.plus', function () {
+                var row = $(this).closest('tr');
+                $('.loader').show();
+                var qty = parseInt(row.find('.qty').val());
+                qty = qty + 1;
+                row.find('.qty').val(qty);
+                var productId = parseInt(row.find('.productId').text());
+                var qty = parseInt(row.find('.qty').val());
+                $.when(AddToCart(productId, qty)).done(function () {
+                    window.location.reload();
+                    $('.loader').hide();
+                });
+            })
+            $('#tBody').on('click', '.btnRemove', function () {
+                $('.loader').show();
+                var row = $(this).closest('tr');
+                var productId = parseInt(row.find('.productId').text());
+                $.when(Remove(productId)).done(function () {
+                    window.location.reload();
+                    $('.loader').hide();
+                });
+            })
+        })
+    </script>
+}

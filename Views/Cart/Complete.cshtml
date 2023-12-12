@@ -1,0 +1,215 @@
+﻿@model IEnumerable<AmalCollections.VMs.DocVM>
+@using Microsoft.AspNetCore.Identity
+@using AmalCollections.Data
+@inject SignInManager<User> snMgr
+
+@{
+    ViewData["Title"] = "Complete Order";
+    double qty = 0, rate = 0, amount = 0, totalAmount = 0;
+}
+
+<div class="container">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-5">
+                        <h6>Contact Information</h6>
+                    </div>
+                    <div class="col-md-7 text-right">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <h6>Hello! @User.Identity.Name <a asp-action="Signout" asp-controller="User">Logout</a></h6>
+                        }
+                        else
+                        {
+                            <h6>Already registered? <a asp-action="Login" asp-controller="User" asp-route-returnUrl="/Cart/Complete">Login</a></h6>
+                        }
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <input asp-for="@Model.FirstOrDefault().Email" class="form-control form-control-sm" placeholder="Enter your email or mobile number" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <h5>Shipping Information</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input asp-for="@Model.FirstOrDefault().FirstName" class="form-control form-control-sm" placeholder="First Name" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input asp-for="@Model.FirstOrDefault().LastName" class="form-control form-control-sm" placeholder="Last Name" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <input asp-for="@Model.FirstOrDefault().Address" class="form-control form-control-sm" placeholder="Address" />
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <input asp-for="@Model.FirstOrDefault().City" class="form-control form-control-sm" placeholder="City" />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input asp-for="@Model.FirstOrDefault().Country" class="form-control form-control-sm" value="Pakistan" readonly />
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input asp-for="@Model.FirstOrDefault().PostalCode" class="form-control form-control-sm" placeholder="Postal Code" />
+                        </div>
+                    </div>
+                    <div class="col-md-12 text-right">
+                        <button id="btnComplete" class="btn btn-sm btn-black">Complete order</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <table class="table">
+                    <tbody id="tBody">
+                        @foreach (var item in Model)
+                        {
+                            qty = item.Qty; rate = item.Rate; amount = item.Qty * item.Rate; totalAmount += amount;
+                            <tr>
+                                <td style="width: 65%">
+                                    <div class="row">
+                                        <div class="col-md-2">
+                                            <img width="50" height="75" src="~/images/products/@item.ImagePath" />
+                                        </div>
+                                        <div class="col-md-10" style="height: 75px !important;">
+                                            <p>@item.Product.Name</p>
+                                            <p class="productId" hidden>@item.ProductId</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="width: 35%">
+                                    <div class="row">
+                                        <div class="col-md-3" style="height: 75px !important;">
+                                            <label>@item.Qty</label>
+                                        </div>
+                                        <div class="col-md-9" style="height: 75px !important;">
+                                            <p>Rs. @(amount)</p>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th style="width: 65%">
+                                <h6>Total</h6>
+                            </th>
+                            <th style="width: 35%">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                    </div>
+                                    <div class="col-md-9">
+                                        <p>Rs. @totalAmount</p>
+                                    </div>
+                                </div>
+                            </th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        function Complete() {
+            var d = {
+                Email: $('#Email').val(),
+                FirstName: $('#FirstName').val(),
+                LastName: $('#LastName').val(),
+                Address: $('#Address').val(),
+                City: $('#City').val(),
+                PostalCode: $('#PostalCode').val(),
+            };
+            $.ajax({
+                type: 'Post',
+                url: '/Cart/Complete',
+                data: { vm: d },
+                success: function (dat) {
+                    if (dat.includes('Error')) {
+                        $.alert({
+                            title: 'Alert',
+                            content: dat,
+                            theme: 'supervan',
+                        })
+                    }
+                    else {
+                        $.alert({
+                            title: 'Alert',
+                            content: 'Your order has been received, Order ID is ' + dat,
+                            theme: 'supervan',
+                            onDestroy: function () {
+                                window.location.href = '/Home/Index'
+                            }
+                        })
+                    }
+                }
+            })
+        }
+        $('document').ready(function () {
+
+            //Click
+            $('#tBody').on('click', '.minus', function () {
+                var row = $(this).closest('tr');
+                $('.loader').show();
+                var qty = parseInt(row.find('.qty').val());
+                if (qty > 1) {
+                    qty = qty - 1;
+                }
+                row.find('.qty').val(qty);
+                var productId = parseInt(row.find('.productId').text());
+                var qty = parseInt(row.find('.qty').val());
+                $.when(AddToCart(productId, qty)).done(function () {
+                    window.location.reload();
+                    $('.loader').hide();
+                });
+            })
+            $('#tBody').on('click', '.plus', function () {
+                var row = $(this).closest('tr');
+                $('.loader').show();
+                var qty = parseInt(row.find('.qty').val());
+                qty = qty + 1;
+                row.find('.qty').val(qty);
+                var productId = parseInt(row.find('.productId').text());
+                var qty = parseInt(row.find('.qty').val());
+                $.when(AddToCart(productId, qty)).done(function () {
+                    window.location.reload();
+                    $('.loader').hide();
+                });
+            })
+            $('#tBody').on('click', '.btnRemove', function () {
+                $('.loader').show();
+                var row = $(this).closest('tr');
+                var productId = parseInt(row.find('.productId').text());
+                $.when(Remove(productId)).done(function () {
+                    window.location.reload();
+                    $('.loader').hide();
+                });
+            })
+            $('#btnComplete').on('click', function () {
+                Complete();
+            })
+        })
+    </script>
+}

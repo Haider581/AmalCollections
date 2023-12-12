@@ -1,0 +1,56 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@using Microsoft.AspNetCore.Identity
+@using AmalCollections.Data
+@using AmalCollections.VMs
+@inject ACContext context
+@{
+    var brands = context.Brands.ToList();
+}
+<style>
+    .container-fluid{
+        padding: 0px;
+    }
+    @@media only screen and (min-width: 768px) {
+        .row {
+            margin-bottom: 10px !important;
+        }
+    }
+
+    @@media only screen and (max-width: 767px) {
+        .cardContainer {
+            margin-bottom: 10px !important;
+        }
+    }
+</style>
+
+<div class="owl-carousel">
+    <div>
+        <img src="~/images/slider 1.jpg" class="img-fluid" />
+    </div>
+    <div>
+        <img src="~/images/slider 2.jpg" class="img-fluid" />
+    </div>
+    <div>
+        <img src="~/images/slider 3.jpg" class="img-fluid" />
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        @foreach (var item in brands)
+        {
+            <div onclick="Collection(@item.Id);" class="col-md-4 pb-2">
+                <div class="cardContainer">
+                    <a href="@Url.Action("Index", "Product", new { id = item.Id, catId = 1, sortId = 7 })"><img width="350" height="233" src="~/images/brands/@item.ImagePath" class="card-img" /></a>
+                    <h5 class="text-center">@item.Name</h5>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts{
+    <script></script>
+}

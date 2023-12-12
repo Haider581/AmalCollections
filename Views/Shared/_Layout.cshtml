@@ -1,0 +1,297 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using AmalCollections.Data
+@inject ACContext context
+@inject SignInManager<User> snMgr
+@{
+    var brands = context.Brands.ToList();
+}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title icon="">Welcome to Amal Collections</title>
+    <link rel="icon" type="image/x-icon" href="~/images/logo-2.png" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/lib/select2/css/select2.min.css">
+    <link rel="stylesheet" type="text/css" href="~/lib/Datatables/css/datatables.min.css">
+    <link rel="stylesheet" type="text/css" href="~/lib/FontAwesome/css/all.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Charm' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="~/lib/owlCarousel/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="~/lib/owlCarousel/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="~/fonts/owlCarousel/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="~/lib/alert/css/jquery-confirm.min.css">
+    <link rel="stylesheet" href="~/css/site.css">
+    <style>
+        .marquee-slider {
+            background-color: #fff4f9;
+            padding: 5px 2px 0px;
+            color: #000;
+        }
+
+        .pak-flag {
+            width: 16px;
+        }
+
+
+        .top-header {
+            color: #333;
+            padding: 0px 12px 0px 8px
+        }
+
+            .top-header .navbar-brand {
+                color: #333;
+                text-transform: uppercase;
+                font-family: 'Times New Roman', Times, serif !important;
+                font-size: 24px;
+            }
+
+            .top-header .dropdown-menu {
+                padding: .2rem 0;
+            }
+
+        .navbar {
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+            .navbar .cartcount {
+                min-width: 24px;
+                height: 24px;
+                line-height: 24px;
+                -moz-border-radius: 100%;
+                -webkit-border-radius: 100%;
+                -ms-border-radius: 100%;
+                -o-border-radius: 100%;
+                border-radius: 100%;
+                text-align: center;
+                padding: 0 5px;
+                color: #000 !important;
+                background: #ffd3d3 !important;
+                font-size: 14px;
+            }
+
+        @@media only screen and (max-width: 991px) {
+            .form-responsive {
+                display: block;
+                width: 100%;
+            }
+                .form-responsive .dropdown {
+                    display: inline-block !important;
+                }
+        }
+
+            @@media only screen and (max-width: 767px) {
+                .btnCart {
+                    margin-top: 10px !important;
+                }
+            }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="top-header">
+            <span class="">
+                <a class="navbar-brand ml-lg-3" asp-action="Index" asp-controller="Home">Amal Collections</a>
+            </span>
+            <form class="form-inline my-2 my-lg-0 float-right pt-lg-2 form-responsive">
+                <span class="text_order"><i class="fa fa-phone" aria-hidden="true"></i>&nbsp; +92 324 4444246</span>
+                &nbsp;|&nbsp;
+                <div class="dropdown">
+                    <span class="dropdown-toggle" data-toggle="dropdown"> <i class="fa fa-user"></i></span>
+                    <div class="dropdown-menu">
+                        @*<a class="dropdown-item-text" href="#">Text Link</a>*@
+                        @if (snMgr.IsSignedIn(User))
+                        {
+                            <a class="dropdown-item" asp-action="Signout" asp-controller="User">Logout</a>
+                        }
+                        else
+                        {
+                            <a class="dropdown-item" asp-action="Login" asp-controller="User">Login</a>
+                        }
+
+                    </div>
+                </div>
+                &nbsp;|&nbsp;
+                <img src="~/images/pakistan.svg" class="pak-flag" />
+                &nbsp;|&nbsp;
+                <div class="input-group ml-lg-2">
+                    <input type="text" id="search" placeholder="Type to search" class="form-control form-control-sm" />
+                    <span class="input-group-append bg-white border-left-0">
+                        <span class="input-group-text bg-transparent">
+                            <i class="fa fa-search"></i>
+                        </span>
+                    </span>
+                </div>
+            </form>
+
+        </div>
+    </div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" asp-action="Index" asp-controller="Home">Home <span class="sr-only">(current)</span></a>
+                </li>
+                @if (snMgr.IsSignedIn(User))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" asp-action="Index" asp-controller="Order">Orders</a>
+                    </li>
+                }
+                @if (snMgr.IsSignedIn(User) && User.IsInRole("Admin"))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" asp-action="Index" asp-controller="Brand">Brands</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-action="Index" asp-controller="Category">Categories</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-action="List" asp-controller="Product">Products</a>
+                    </li>
+                }
+                @foreach (var item in brands)
+                {
+                    <li class="nav-item">
+                        @Html.ActionLink(item.Name, "Index", "Product", new { id = item.Id, catId = 1, sortId = 7 }, new { @class = "nav-link" })
+                    </li>
+                }
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <a asp-action="CartDetail" asp-controller="Cart" style="color: black;"><span class="fa fa-shopping-cart mr-sm-1 btnCart"></span></a>
+                <span class="cartcount">0</span>
+            </form>
+        </div>
+    </nav>
+    @*<div>
+        <div class="page-width">
+            <center class="marquee-slider">
+                <marquee behavior=scroll direction="left" scrollamount="4">This site is currently under construction. It will be live soon!</marquee>
+            </center>
+        </div>
+    </div>*@
+    <div class="container-fluid main">
+        <br />
+        @RenderBody()
+    </div>
+    <footer class="myFooter border">
+        <div class="container">
+            <div class="row">
+                <div class="col-6 col-md-2 exchange">
+                    <ul>
+                        <li>Exchange Policy</li>
+                        <li>FAQ's</li>
+                        <li>Contact Us</li>
+                    </ul>
+                </div>
+                <div class="col-6 col-md-2 about">
+                    <ul>
+                        <li>About Us</li>
+                        <li>Privacy Policy</li>
+                        <li>Career</li>
+                        <li>How to order</li>
+                    </ul>
+                </div>
+                <div class="col-md-2">
+
+                </div>
+                <div class="col-md-6 subscribe">
+                    @*<h6>Sign up for our news letter</h6>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Enter you email address" />
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button">Subscribe</button>
+                            </div>
+                        </div>*@
+                </div>
+            </div>
+            <br />
+            <br />
+            <div class="row">
+                <div class="col-9 col-md-6">
+                    <div class="row">
+                        <div class="col-12 col-md-5 contact">
+                            <span class="fa fa-phone fa-2x"></span><a href="#">+92 324 4444246</a>
+                        </div>
+                        <div class="col-12 col-md-7 contact">
+                            <span class="fa fa-envelope fa-2x"></span><a href="#">info@@amalcollections.com</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3 col-md-6">
+                    <div class="row">
+                        <div class="col-12 col-md-12 contact text-right">
+                            <div class="row">
+                                <div class="col-12 col-md-4 social">
+                                    <span class="fab fa-facebook-square fa-2x"></span><a href="#" class="social-text">Facebook</a>
+                                </div>
+                                <div class="col-12 col-md-4 social">
+                                    <span class="fab fa-instagram fa-2x"></span><a href="#" class="social-text">Instagram</a>
+                                </div>
+                                <div class="col-12 col-md-4 social">
+                                    <span class="fab fa-twitter-square fa-2x"></span><a href="#" class="social-text">Twitter</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-12 col-md-6 copy">
+                    Amal Collections | All Rights Reserved 2020
+                </div>
+                <div class="col-12 col-md-6 copyPower">
+                    Powered by Softworld
+                </div>
+            </div>
+        </div>
+    </footer>
+    <div class="loader">
+        <div class="lds-dual-ring"></div>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/lib/select2/js/select2.min.js"></script>
+    <script src="~/lib/Datatables/js/datatables.min.js"></script>
+    <script src="~/lib/owlCarousel/js/owl.carousel.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script src="~/lib/okzoom/okzoom.min.js"></script>
+    <script src="~/lib/alert/js/jquery-confirm.min.js"></script>
+    <script src="~/js/site.js"></script>
+    @RenderSection("Scripts", false)
+    <script>
+        $(document).ready(function () {
+            $(".owl-carousel").owlCarousel({
+                items: 1,
+                loop: true,
+                autoplay: true,
+                autoHeight: true
+            });
+            $('#search').on('keydown', function (e) {
+                if (e.which == 13) {
+                    e.preventDefault();
+                    $.ajax({
+                        type: 'Get',
+                        url: '/Product/IndexP',
+                        data: { name: $('#search').val() },
+                        success: function (dat) {
+                            if (dat != null) {
+                                $('.main').html('');
+                                $('.main').html(dat);
+                            }
+                        }
+                    })
+                }
+            })
+            CartTotal();
+        });
+    </script>
+</body>
+</html>

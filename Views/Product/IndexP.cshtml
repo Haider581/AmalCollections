@@ -1,0 +1,75 @@
+﻿@model IEnumerable<AmalCollections.VMs.ProductVM>
+
+@{
+    ViewData["Title"] = "Products";
+    Layout = null;
+}
+<style>
+    h2 {
+        font-family: "Karla","HelveticaNeue","Helvetica Neue",sans-serif;
+        font-weight: 400;
+        letter-spacing: 0.1em;
+        font-size: 2.14286em;
+    }
+
+    label {
+        font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
+        font-size: 0.85714em;
+        font-weight: 700;
+        color: #666;
+        text-transform: uppercase;
+        margin-bottom: 13px;
+    }
+
+    .pName {
+        white-space: normal;
+        color: #000;
+        display: block;
+        margin-bottom: 0px;
+        font-weight: 600;
+        text-transform: uppercase !important;
+        text-decoration: none !important;
+        font-family: "proxima_novabold", Arial, Helvetica, sans-serif;
+        letter-spacing: 0.5px;
+        font-size: 11px;
+    }
+
+    .pPrice {
+        font-weight: 400;
+        color: #000;
+        font: 10px/15px "proxima_novasemibold", Arial, Helvetica, sans-serif;
+        font-size: 11px;
+        margin-top: 3px;
+    }
+</style>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12" style="margin-top: 30px;">
+            <h2>Showing Results for @ViewBag.Name</h2>
+        </div>
+    </div>
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-6 col-md-2 text-center">
+                <a asp-action="Details" asp-controller="Product" asp-route-id="@item.Id">
+                    <img src="~/images/products/@item.ImagePath" style="width: 100%; height: 235px;" />
+                    <div class="pName">
+                        @item.Name
+                    </div>
+                    <div class="pPrice">
+                        Rs. @item.SalePrice
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $('document').ready(function () {
+
+        })
+    </script>
+}

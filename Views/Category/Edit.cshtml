@@ -1,0 +1,46 @@
+﻿@model AmalCollections.VMs.CategoryVM
+
+@{
+    ViewData["Title"] = "Edit Category";
+    Layout = "_Layout";
+}
+<style>
+    .btn-black {
+        width: 100%;
+    }
+
+    @@media (max-width:767px) {
+        input[type=submit] {
+            margin-bottom: 10px;
+        }
+    }
+</style>
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="text-center">@ViewData["Title"]</h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <form method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="Id" value="@Model.Id" readonly hidden />
+            <input asp-for="InitialName" value="@Model.InitialName" readonly hidden />
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control form-control-sm" required />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <input type="submit" value="Save" class="btn btn-black" />
+                </div>
+                <div class="col-md-6">
+                    <a asp-action="Index" class="btn btn-black">Back</a>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4"></div>
+</div>

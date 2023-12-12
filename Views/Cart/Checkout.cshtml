@@ -1,0 +1,254 @@
+﻿@model IEnumerable<AmalCollections.Data.Cart>
+
+@{
+    ViewData["Title"] = "Checkout";
+}
+
+
+<link rel="stylesheet" type="text/css" href="~/lib/checkout.css">
+<link rel="stylesheet" type="text/css" href="~/lib/checkout_responsive.css">
+
+<link rel="stylesheet" type="text/css" href="~/lib/cart.css">
+<link rel="stylesheet" type="text/css" href="~/lib/cart_responsive.css">
+
+<div class="home">
+    <div class="home_container d-flex flex-column align-items-center justify-content-end">
+        <div class="home_content text-center">
+            <div class="home_title">Checkout</div>
+            <div class="breadcrumbs d-flex flex-column align-items-center justify-content-center">
+                <ul class="d-flex flex-row align-items-start justify-content-start text-center">
+                    <li><a href="#">Home</a></li>
+                    <li>Checkout</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@if (Model != null)
+{
+    <div class="cart_section">
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <div class="cart_container">
+
+                        <!-- Cart Bar -->
+                        <div class="cart_bar">
+                            <ul class="cart_bar_list item_list d-flex flex-row align-items-center justify-content-end">
+                                <li class="mr-auto">Product</li>
+                                <li>Price</li>
+                                <li>Quantity</li>
+                                <li>Total</li>
+                            </ul>
+                        </div>
+
+                        <!-- Cart Items -->
+                        <div class="cart_items">
+                            <ul class="cart_items_list">
+
+                                @foreach (var item in Model)
+                                {
+                                    <!-- Cart Item -->
+                                    <li class="cart_item item_list d-flex flex-lg-row flex-column align-items-lg-center align-items-start justify-content-lg-end justify-content-start">
+                                        <div class="product d-flex flex-lg-row flex-column align-items-lg-center align-items-start justify-content-start mr-auto">
+                                            <div><div class="product_number">1</div></div>
+                                            <div><div class="product_image"><img src="~/images/products/@item.Product.ProductImages.FirstOrDefault().ImagePath" alt=""></div></div>
+                                            <div class="product_name_container">
+                                                <div class="product_name"><a href="product.html">@item.Product.Name</a></div>
+                                                <div class="product_text">Second line for additional info</div>
+                                            </div>
+                                        </div>
+                                        <div class="Rate product_price product_text">@item.Product.SalePrice</div>
+                                        <div class="product_quantity_container">
+                                            <div class="product_quantity ml-lg-auto mr-lg-auto text-center">
+                                                <span class="Qty product_text product_num">@item.Qty</span>
+                                                <div onclick="AddToCart(@item.Product.Id, -1)" class="qty_sub qty_button trans_200 text-center"><span>-</span></div>
+                                                <div onclick="AddToCart(@item.Product.Id, 1)" class="qty_add qty_button trans_200 text-center"><span>+</span></div>
+                                            </div>
+                                        </div>
+                                        <div class="totalAmount product_total product_text"></div>
+                                    </li>
+
+                                }
+                            </ul>
+
+                        </div>
+
+                        <!-- Cart Buttons -->
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+}
+else
+{
+    <h3 class="text-center">Your cart is empty</h3>
+    <div class="button button_continue trans_200"><a asp-action="Index" asp-controller="Home">continue shopping</a></div>
+}
+
+<!-- Checkout -->
+
+<div class="checkout">
+    <div class="container">
+        <div class="row">
+            <!-- Billing -->
+            <div class="col-lg-6">
+                @*<div class="billing">
+                    <div class="checkout_title">Billing</div>
+                    <div class="checkout_form_container">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <input type="text" id="FirstName" class="checkout_input" placeholder="First Name" required="required">
+                            </div>
+                            <div class="col-lg-6">
+                                <input type="text" id="LastName" class="checkout_input" placeholder="Last Name" required="required">
+                            </div>
+                        </div>
+                        <div>
+                            <input type="text" id="UserName" class="checkout_input" placeholder="Username" required="required">
+                            <input type="password" id="Password" class="checkout_input checkout_address_2" placeholder="Password" required="required">
+                            <input type="password" id="ConfirmPassword" class="checkout_input checkout_address_2" placeholder="Re-enter Password" required="required">
+                        </div>
+
+                        <div>
+                            <input type="text" id="Address" class="checkout_input" placeholder="Address" required="required">
+                        </div>
+                        <div>
+                            <input type="text" id="City" class="checkout_input" placeholder="City" required="required">
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <input type="text" id="Country" class="checkout_input" placeholder="Country" required="required">
+                            </div>
+                            <div class="col-lg-6">
+                                <input type="text" id="PostalCode" class="checkout_input" placeholder="Postal Code" required="required">
+                            </div>
+                        </div>
+                        <div>
+                            <input type="tel" id="Phone" class="checkout_input" placeholder="Phone" required="required">
+                        </div>
+                        <div class="checkout_extra">
+                                <ul>
+                                    <li class="billing_info d-flex flex-row align-items-center justify-content-start">
+                                        <label class="checkbox_container">
+                                            <input type="checkbox" id="cb_1" name="billing_checkbox" class="billing_checkbox">
+                                            <span class="checkbox_mark"></span>
+                                            <span class="checkbox_text">Terms and conditions</span>
+                                        </label>
+                                    </li>
+                                    <li class="billing_info d-flex flex-row align-items-center justify-content-start">
+                                        <label class="checkbox_container">
+                                            <input type="checkbox" id="cb_2" name="billing_checkbox" class="billing_checkbox">
+                                            <span class="checkbox_mark"></span>
+                                            <span class="checkbox_text">Create an account</span>
+                                        </label>
+                                    </li>
+                                    <li class="billing_info d-flex flex-row align-items-center justify-content-start">
+                                        <label class="checkbox_container">
+                                            <input type="checkbox" id="cb_3" name="billing_checkbox" class="billing_checkbox">
+                                            <span class="checkbox_mark"></span>
+                                            <span class="checkbox_text">Subscribe to our newsletter</span>
+                                        </label>
+                                    </li>
+                                </ul>
+                            </div>
+                    </div>
+                </div>*@
+            </div>
+
+            <!-- Cart Total -->
+            <div class="col-lg-6 cart_col">
+                <div class="cart_total">
+                    <div class="cart_extra_content cart_extra_total">
+                        <div class="checkout_title">Cart Total</div>
+                        <ul class="cart_extra_total_list">
+                            <li class="d-flex flex-row align-items-center justify-content-start">
+                                <div class="cart_extra_total_title">Subtotal</div>
+                                <div class="SubTotal cart_extra_total_value ml-auto"></div>
+                            </li>
+                            <li class="d-flex flex-row align-items-center justify-content-start">
+                                <div class="cart_extra_total_title">Shipping</div>
+                                <div class="cart_extra_total_value ml-auto">Free</div>
+                            </li>
+                            <li class="d-flex flex-row align-items-center justify-content-start">
+                                <div class="cart_extra_total_title">Total</div>
+                                <div class="GrandTotal cart_extra_total_value ml-auto"></div>
+                            </li>
+                        </ul>
+                        <div class="payment_options">
+                            <div class="checkout_title">Payment</div>
+                            <ul>
+                                <li class="shipping_option d-flex flex-row align-items-center justify-content-start">
+                                    <label class="radio_container">
+                                        <input type="radio" id="radio_1" name="payment_radio" class="payment_radio">
+                                        <span class="radio_mark"></span>
+                                        <span class="radio_text">Paypal</span>
+                                    </label>
+                                </li>
+                                <li class="shipping_option d-flex flex-row align-items-center justify-content-start">
+                                    <label class="radio_container">
+                                        <input type="radio" id="radio_2" name="payment_radio" class="payment_radio">
+                                        <span class="radio_mark"></span>
+                                        <span class="radio_text">Cash on Delivery</span>
+                                    </label>
+                                </li>
+                                <li class="shipping_option d-flex flex-row align-items-center justify-content-start">
+                                    <label class="radio_container">
+                                        <input type="radio" id="radio_3" name="payment_radio" class="payment_radio" checked>
+                                        <span class="radio_mark"></span>
+                                        <span class="radio_text">Credit Card</span>
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="cart_text">
+                            <p></p>
+                        </div>
+                        <div class="checkout_button trans_200"><a onclick="PlaceOrder();">place order</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/lib/checkout.js"></script>
+    <script src="~/lib/cart.js"></script>
+    <script>
+        $('document').ready(function () {
+            Calc();
+        })
+        function PlaceOrder() {
+
+            var d = {
+                FirstName: $('#FirstName').val(),
+                LastName: $('#LastName').val(),
+                UserName: $('#UserName').val(),
+                Password: $('#Password').val(),
+                ConfirmPassword: $('#ConfirmPassword').val(),
+
+                Address: $('#Address').val(),
+                City: $('#City').val(),
+                Country: $('#Country').val(),
+                PostalCode: $('#PostalCode').val(),
+                Phone: $('#Phone').val(),
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: '/OrderDetail/Add',
+                data: { vm: d },
+                success: function () {
+
+                }
+            })
+        }
+    </script>
+}
